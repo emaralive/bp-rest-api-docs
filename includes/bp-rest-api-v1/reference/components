@@ -1,0 +1,140 @@
+<h1 id='components-endpoint'>Components Endpoint</h1>
+<p>BuddyPress chose a modular approach using components to organize its features. Two components are loaded by default (eg: BuddyPress Core and Community Members) while the majority are optionals. BuddyPress comes with 8 built-in optional components (Account Settings, Activity Streams, Extended Profiles, Friend connections, Notifications, Private messaging, User groups and Site Tracking).</p>
+
+<aside class="warning">
+<strong>Note</strong>: It’s important to note there can be more optional components regarding the BuddyPress plugins installed on the website : these plugins can use the BP Component API to incorpore the lists of active or inactive BuddyPress components.
+</aside>
+<h2 id='components-schema'>Components Schema</h2>
+<p>The schema defines all the fields that exist for BuddyPress components.</p>
+
+<table><thead>
+<tr>
+<th style="text-align: left">Attribute</th>
+<th style="text-align: left">Type</th>
+<th style="text-align: left">Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td style="text-align: left">name</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">Name of the component. <br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">status</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">Whether the component is active or inactive. <br><br><strong>Context</strong>: <code>view</code>, <code>edit</code>. <br><br><strong>One of</strong>: <code>active</code>, <code>inactive</code></td>
+</tr>
+<tr>
+<td style="text-align: left">title</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">HTML title of the component. <br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">description</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">HTML description of the component. <br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+</tbody></table>
+<h2 id='list-the-buddypress-components'>List the BuddyPress components</h2><h3 id='arguments-list-components'>Arguments - List Components</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>context</td>
+<td><code>string</code></td>
+<td>Scope under which the request is made; determines fields present in response.<br><br><strong>Default</strong>: <code>view</code><br><br><strong>One of</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td>page</td>
+<td><code>integer</code></td>
+<td>Current page of the collection.<br><br><strong>Default</strong>: <code>1</code></td>
+</tr>
+<tr>
+<td>per_page</td>
+<td><code>integer</code></td>
+<td>Maximum number of components to be returned in result set.<br><br><strong>Default</strong>: <code>10</code></td>
+</tr>
+<tr>
+<td>search</td>
+<td><code>string</code></td>
+<td>Limit results to those matching a string.</td>
+</tr>
+<tr>
+<td>status</td>
+<td><code>string</code></td>
+<td>Limit result set to components with a specific status.<br><br><strong>Default</strong>: <code>all</code><br><br><strong>One of</strong>: <code>all</code>, <code>active</code>, <code>inactive</code></td>
+</tr>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+<td>Limit result set to components with a specific type.<br><br><strong>Default</strong>: <code>all</code><br><br><strong>One of</strong>: <code>all</code>, <code>optional</code>, <code>retired</code>, <code>required</code></td>
+</tr>
+</tbody></table>
+<h3 id='definition-list-components'>Definition - List Components</h3>
+<p><code>GET /buddypress/v1/components</code></p>
+<h3 id='example-list-components'>Example - List Components</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/components</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">view</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='activate-deactivate-a-buddypress-component'>Activate/Deactivate a BuddyPress Component</h2><h3 id='arguments-activate-deactivate-component'>Arguments - Activate/Deactivate Component</h3>
+<table><thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td>Name of the component.<br><br><strong>Required</strong>.</td>
+</tr>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td>Whether to activate or deactivate the component.<br><br><strong>Required</strong><br><br><strong>One of</strong>: <code>activate</code>, <code>deactivate</code></td>
+</tr>
+</tbody></table>
+<h3 id='definition-activate-deactivate-component'>Definition - Activate/Deactivate Component</h3>
+<p><code>PUT /buddypress/v1/components</code></p>
+<h3 id='example-activate-component'>Example - Activate Component</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/components</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">PUT</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">edit</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">activity</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">activate</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div>

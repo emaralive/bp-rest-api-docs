@@ -1,0 +1,548 @@
+<h1 id='members-endpoint'>Members Endpoint</h1>
+<p>The BuddyPress Members endpoint extends the WordPress Users one to include specific BuddyPress data such as profile fields data <em>(1)</em> and use the <code>BP_User_Query</code> instead of the <code>WP_User_Query</code> to fetch the members.</p>
+
+<p><em>(1) If the Extend profiles component is active on the website.</em></p>
+<h2 id='members-schema'>Members Schema</h2>
+<p>The schema defines all the fields that exist for a member object.</p>
+
+<table><thead>
+<tr>
+<th style="text-align: left">Attribute</th>
+<th style="text-align: left">Type</th>
+<th style="text-align: left">Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td style="text-align: left">id</td>
+<td style="text-align: left"><code>integer</code></td>
+<td style="text-align: left">Unique identifier for the member.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>embed</code>, <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">name</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">Display name for the member.<br><br><strong>Context</strong>: <code>embed</code>, <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">mention_name</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">The name used for that user in @-mentions.<br><br><strong>Context</strong>: <code>embed</code>, <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">link</td>
+<td style="text-align: left"><code>string</code>, <code>uri</code></td>
+<td style="text-align: left">Profile URL of the member.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>embed</code>, <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">user_login</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">An alphanumeric identifier for the member.<br><br><strong>Context</strong>: <code>embed</code>, <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">member_types</td>
+<td style="text-align: left"><code>array</code></td>
+<td style="text-align: left">Member types associated with the member. See this documentation page for more information.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>embed</code>, <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">registered_date</td>
+<td style="text-align: left"><code>string</code> or <code>null</code></td>
+<td style="text-align: left">Registration date for the member.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">registered_date_gmt</td>
+<td style="text-align: left"><code>string</code> or <code>null</code></td>
+<td style="text-align: left">The date the member was registered, as GMT.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">password</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">Password for the member (never included).<br><br><strong>Context</strong>: <code>none</code></td>
+</tr>
+<tr>
+<td style="text-align: left">roles</td>
+<td style="text-align: left"><code>array</code></td>
+<td style="text-align: left">Roles assigned to the member.<br><br><strong>Context</strong>: <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">capabilities</td>
+<td style="text-align: left"><code>object</code></td>
+<td style="text-align: left">All capabilities assigned to the member.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">extra_capabilities</td>
+<td style="text-align: left"><code>object</code></td>
+<td style="text-align: left">All capabilities assigned to the member.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">xprofile (1)</td>
+<td style="text-align: left"><code>array</code></td>
+<td style="text-align: left">Member xProfile groups and its fields.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">friendship_status (2)</td>
+<td style="text-align: left"><code>boolean</code></td>
+<td style="text-align: left">Whether the logged in user has a friendship relationship with the fetched user.<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">friendship_status_slug (2)</td>
+<td style="text-align: left"><code>string</code></td>
+<td style="text-align: left">Slug of the friendship relationship status the logged in user has with the fetched user.<br><br><strong>Read only</strong><br><br><strong>One of</strong>: <code>is_friend</code>, <code>not_friends</code>, <code>pending</code>, <code>awaiting_response</code><br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">last_activity</td>
+<td style="text-align: left"><code>object</code></td>
+<td style="text-align: left">Last date the member was active on the site (object properties: timediff, date and date_gmt).<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">latest_update (3)</td>
+<td style="text-align: left"><code>object</code></td>
+<td style="text-align: left">The content of the latest activity posted by the member (object properties: id, raw and rendered).<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">total_friend_count (2)</td>
+<td style="text-align: left"><code>integer</code></td>
+<td style="text-align: left">Total number of friends for the member..<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>view</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td style="text-align: left">avatar_urls (4)</td>
+<td style="text-align: left"><code>object</code></td>
+<td style="text-align: left">Avatar URLs for the member (Full &amp; Thumb sizes).<br><br><strong>Read only</strong><br><br><strong>Context</strong>: <code>embed</code>, <code>view</code>, <code>edit</code></td>
+</tr>
+</tbody></table>
+
+<p><em>(2) Data is only fetched if the Friends component is active<br>
+(3) Data is only fetched if the Activity component is active<br>
+(4) Only if the WordPress discussion settings allow avatars.</em></p>
+<h2 id='list-members'>List Members</h2><h3 id='arguments-list-members'>Arguments - List Members</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>context</td>
+<td><code>string</code></td>
+<td>Scope under which the request is made; determines fields present in response.<br><br><strong>Default</strong>: <code>view</code><br><br><strong>One of</strong>: <code>view</code>, <code>embed</code>, <code>edit</code></td>
+</tr>
+<tr>
+<td>page</td>
+<td><code>integer</code></td>
+<td>Current page of the collection. <br><br><strong>Default</strong>: <code>1</code></td>
+</tr>
+<tr>
+<td>per_page</td>
+<td><code>integer</code></td>
+<td>Maximum number of members to be returned in result set. <br><br><strong>Default</strong>: <code>10</code></td>
+</tr>
+<tr>
+<td>search</td>
+<td><code>string</code></td>
+<td>Limit results to those matching a string.</td>
+</tr>
+<tr>
+<td>exclude</td>
+<td><code>array</code></td>
+<td>Ensure result set excludes specific IDs. <br><br><strong>Default</strong>: <code>[]</code></td>
+</tr>
+<tr>
+<td>include</td>
+<td><code>array</code></td>
+<td>Ensure result set include specific IDs.<br><br><strong>Default</strong>: <code>[]</code></td>
+</tr>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+<td>Shorthand for certain orderby/order combinations.<br><br><strong>Default</strong>: <code>newest</code> <br><br><strong>One of</strong>: <code>active</code>, <code>newest</code>, <code>alphabetical</code>, <code>random</code>, <code>online</code>, <code>popular</code></td>
+</tr>
+<tr>
+<td>user_id</td>
+<td><code>integer</code></td>
+<td>Limit results to friends of a user.<br><br><strong>Default</strong>: <code>0</code></td>
+</tr>
+<tr>
+<td>user_ids</td>
+<td><code>array</code></td>
+<td>Pass IDs of users to limit result set.<br><br><strong>Default</strong>: <code>[]</code></td>
+</tr>
+<tr>
+<td>populate_extras</td>
+<td><code>boolean</code></td>
+<td>Whether to fetch extra BP data about the returned members.<br><br><strong>Default</strong>: <code>false</code></td>
+</tr>
+<tr>
+<td>member_type</td>
+<td><code>array</code></td>
+<td>Limit results set to certain type(s). See this <a href="https://codex.buddypress.org/developer/member-types/">documentation page</a> for more information.<br><br><strong>Default</strong>: <code>[]</code></td>
+</tr>
+<tr>
+<td>xprofile</td>
+<td><code>array</code></td>
+<td>Limit results set to a certain XProfile field.<br><br><strong>Default</strong>: <code>[]</code></td>
+</tr>
+</tbody></table>
+<h3 id='definition-list-members'>Definition - List Members</h3>
+<p><code>GET /buddypress/v1/members</code></p>
+<h3 id='example-list-members'>Example - List Members</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">view</span><span class="dl">'</span><span class="p">,</span>
+    <span class="dl">'</span><span class="s1">xprofile</span><span class="dl">'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">relation</span><span class="p">:</span> <span class="dl">'</span><span class="s1">AND</span><span class="dl">'</span><span class="p">,</span>
+        <span class="na">args</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test field</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">value</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Hello world</span><span class="dl">'</span><span class="p">,</span>
+                <span class="na">compare</span><span class="p">:</span> <span class="dl">'</span><span class="s1">=</span><span class="dl">'</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">},</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='create-a-member'>Create a Member</h2><h3 id='arguments-create-member'>Arguments - Create Member</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>user_login</td>
+<td><code>string</code></td>
+<td>An alphanumeric identifier for the member.<br><br><strong>Required</strong></td>
+</tr>
+<tr>
+<td>password</td>
+<td><code>string</code></td>
+<td>Password for the member.<br><br><strong>Required</strong></td>
+</tr>
+<tr>
+<td>email</td>
+<td><code>string</code></td>
+<td>The email address for the member.<br><br><strong>Required</strong></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td>Display name for the member.</td>
+</tr>
+<tr>
+<td>roles</td>
+<td><code>array</code></td>
+<td>Roles assigned to the member.</td>
+</tr>
+<tr>
+<td>member_type</td>
+<td><code>string</code></td>
+<td>A comma separated list of Member Types to set for the member. See this <a href="https://codex.buddypress.org/developer/member-types/">documentation page</a> for more information.</td>
+</tr>
+</tbody></table>
+<h3 id='definition-create-member'>Definition - Create Member</h3>
+<p><code>POST /buddypress/v1/members</code></p>
+<h3 id='example-create-member'>Example - Create Member</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">POST</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">edit</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Test User</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">user_login</span><span class="p">:</span> <span class="dl">'</span><span class="s1">testuser</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">test@user.mail</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">password</span><span class="p">:</span> <span class="dl">'</span><span class="s1">password</span><span class="dl">'</span> <span class="c1">// Always use strong passwords, not like this one!</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='retrieve-a-specific-member'>Retrieve a Specific Member</h2><h3 id='arguments-retrieve-member'>Arguments - Retrieve Member</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><code>integer</code></td>
+<td>Unique identifier for the member.</td>
+</tr>
+<tr>
+<td>context</td>
+<td><code>string</code></td>
+<td>Scope under which the request is made; determines fields present in response.<br><br><strong>Default</strong>: <code>view</code><br><br><strong>One of</strong>: <code>view</code>, <code>embed</code>,<code>edit</code></td>
+</tr>
+<tr>
+<td>populate_extras</td>
+<td><code>boolean</code></td>
+<td>Whether to fetch extra BP data about the returned member.<br><br><strong>Default</strong>: <code>false</code></td>
+</tr>
+</tbody></table>
+<h3 id='definition-retrieve-member'>Definition - Retrieve Member</h3>
+<p><code>GET /buddypress/v1/members/&lt;id&gt;</code></p>
+<h3 id='example-retrieve-member'>Example - Retrieve Member</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members/2</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">view</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='update-a-specific-member'>Update a Specific Member</h2><h3 id='arguments-update-member'>Arguments - Update Member</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><code>integer</code></td>
+<td>Unique identifier for the user.</td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td>Display name for the member.</td>
+</tr>
+<tr>
+<td>roles</td>
+<td><code>array</code></td>
+<td>Roles assigned to the member.</td>
+</tr>
+<tr>
+<td>member_type</td>
+<td><code>string</code></td>
+<td>A comma separated list of Member Types to set for the member. See this <a href="https://codex.buddypress.org/developer/member-types/">documentation page</a> for more information.</td>
+</tr>
+</tbody></table>
+<h3 id='definition-update-member'>Definition - Update Member</h3>
+<p><code>PUT /buddypress/v1/members/&lt;id&gt;</code></p>
+<h3 id='example-update-member'>Example - Update Member</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members/2</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">PUT</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">edit</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">FirstName LastName</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">roles</span><span class="p">:</span> <span class="dl">'</span><span class="s1">contributor</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='delete-a-specific-member'>Delete a Specific Member</h2><h3 id='arguments-delete-member'>Arguments - Delete Member</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><code>integer</code></td>
+<td>Unique identifier for the member.<br><br><strong>Required</strong></td>
+</tr>
+<tr>
+<td>force</td>
+<td><code>boolean</code></td>
+<td>Required to be true, as members do not support trashing.</td>
+</tr>
+<tr>
+<td>reassign</td>
+<td><code>integer</code></td>
+<td>Reassign the deleted member’s posts and links to this user ID.<br><br><strong>Required</strong></td>
+</tr>
+</tbody></table>
+<h3 id='definition-delete-member'>Definition - Delete Member</h3>
+<p><code>DELETE /buddypress/v1/members/&lt;id&gt;</code></p>
+<h3 id='example-delete-member'>Example - Delete Member</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members/2</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DELETE</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">edit</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">force</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">reassign</span><span class="p">:</span> <span class="mi">1</span> <span class="c1">// The User ID to reassign the deleted user's post to.</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='retrieve-the-logged-in-member'>Retrieve the Logged-in Member</h2><h3 id='arguments-retrieve-logged-in-member'>Arguments - Retrieve Logged-in Member</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>context</td>
+<td><code>string</code></td>
+<td>Scope under which the request is made; determines fields present in response.&gt;br&gt;<br><strong>Default</strong>: <code>view</code><br><br><strong>One of</strong>: <code>view</code>, <code>embed</code>, <code>edit</code></td>
+</tr>
+</tbody></table>
+<h3 id='definition-retrieve-logged-in-member'>Definition - Retrieve Logged-in Member</h3>
+<p><code>GET /buddypress/v1/members/me</code></p>
+<h3 id='example-retrieve-logged-in-member'>Example - Retrieve Logged-in Member</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members/me</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">view</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='update-the-logged-in-member'>Update the Logged-in Member</h2><h3 id='arguments-update-logged-in-member'>Arguments - Update Logged-in Member</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td>Display name for the member.</td>
+</tr>
+<tr>
+<td>roles <em>(1)</em></td>
+<td><code>array</code></td>
+<td>Roles assigned to the member.</td>
+</tr>
+<tr>
+<td>member_type</td>
+<td><code>string</code></td>
+<td>A comma separated list of Member Types to set for the member. See this <a href="https://codex.buddypress.org/developer/member-types/">documentation page</a> for more information.</td>
+</tr>
+</tbody></table>
+
+<p><em>(1) To update roles, the logged in member must have the</em> <code>*promote_user*</code> <em>capability.</em></p>
+<h3 id='definition-update-logged-in-member'>Definition - Update Logged-in Member</h3>
+<p><code>PUT /buddypress/v1/members/me</code></p>
+<h3 id='example-update-logged-in-member'>Example - Update Logged-in Member</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members/me</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">PUT</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">edit</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">FirstName LastName</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div><h2 id='delete-the-logged-in-member'>Delete the Logged-in Member</h2><h3 id='arguments-delete-logged-in-member'>Arguments - Delete Logged-in Member</h3>
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>force</td>
+<td><code>boolean</code></td>
+<td>True as users do not support trashing.<br><br><strong>Required</strong></td>
+</tr>
+<tr>
+<td>reassign</td>
+<td><code>integer</code></td>
+<td>Reassign the deleted member’s posts and links to this user ID.<br><br><strong>Required</strong></td>
+</tr>
+</tbody></table>
+<h3 id='definition-delete-logged-in-member'>Definition - Delete Logged-in Member</h3>
+<p><code>DELETE /buddypress/v1/members/me</code></p>
+<h3 id='example-delete-logged-in-member'>Example - Delete Logged-in Member</h3>
+<aside class="success">
+<strong>Alert</strong>: To use the <code>wp.apiRequest</code> function, you need to enqueue the <code>wp-api-request</code> JavaScript or use it as a dependency of your script. Refer to <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">this page</a> to know more about loading JavaScript files in WordPress.
+</aside>
+
+<aside class="notice">
+<strong>Note</strong>: Click a language tab at the top of the righthand column to view a code example for that language. 
+</aside>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">wp</span><span class="p">.</span><span class="nx">apiRequest</span><span class="p">(</span> <span class="p">{</span>
+  <span class="na">path</span><span class="p">:</span> <span class="dl">'</span><span class="s1">buddypress/v1/members/me</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">DELETE</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">context</span><span class="p">:</span> <span class="dl">'</span><span class="s1">edit</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">force</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">reassign</span><span class="p">:</span> <span class="mi">1</span> <span class="c1">// The User ID to reassign the deleted user's post to.</span>
+  <span class="p">}</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">done</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">fail</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span> <span class="p">);</span>
+</code></pre></div>

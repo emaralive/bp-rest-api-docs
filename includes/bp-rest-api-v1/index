@@ -1,0 +1,73 @@
+<h1 id='bp-rest-api-handbook'>BP REST API Handbook</h1>
+<p>Just like the WordPress REST API does it for content data types the BP REST API provides API endpoints for BuddyPress community actions data types that allow developers to interact with sites remotely by sending and receiving <a href="https://en.wikipedia.org/wiki/JSON">JSON</a> (JavaScript Object Notation) objects. JSON is an open standard data format that is lightweight and human-readable, and looks like Objects do in JavaScript; hence the name.</p>
+
+<p>When you send content to or make a request to the API, the response will be returned in JSON. This enables developers to create, read and update BuddyPress user generated content from client-side JavaScript or from external applications, even those written in languages beyond PHP.</p>
+<h2 id='why-use-the-bp-rest-api'>Why use the BP REST API?</h2>
+<p>The BP REST API makes it easier than ever to use BuddyPress in new and exciting ways, such as creating Single Page Applications on top of BuddyPress. You could create a Template Pack to provide an entirely new front-end experience for BuddyPress, create brand new &amp; interactive community features, or great BuddyPress blocks for the Block Editor.</p>
+
+<p>The BP REST API can also serve as a strong replacement for the WordPress admin-ajax API. By using the BP REST API, you can more easily structure the way you want to get data into and out of BuddyPress. AJAX calls can be greatly simplified by using the BP REST API, enabling you to improve the performance of your custom features.</p>
+<h2 id='about-authentification'>About authentification</h2>
+<p><strong>Cookie authentication</strong> is the standard authentication method included with WordPress, the <strong>BP REST API</strong> utilizes it.</p>
+<h3 id='the-rest-api-nonce'>The REST API Nonce</h3>
+<p>The WordPress REST API includes a technique called <a href="https://developer.wordpress.org/apis/security/nonces/">nonces</a> to avoid <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">CSRF</a> issues. This prevents other sites from forcing you to perform actions without explicitly intending to do so. This requires slightly special handling for the API.</p>
+
+<p>The API uses nonces with the action set to <code>wp_rest</code>. To generate it and pass it to your script you can use the <code>wp_localize_script()</code>function.</p>
+
+<aside class="notice">
+<strong>Note</strong>: The code example in the righthand column are in the <strong>PHP</strong> language. 
+</aside>
+<div class="highlight"><pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1">// Using wp_localize_script()</span>
+<span class="k">function</span> <span class="n">example_enqueue_script</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">wp_enqueue_script</span><span class="p">(</span> <span class="s1">'my-script-handle'</span><span class="p">,</span> <span class="s1">'url-to/my-script.js'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span> <span class="s1">'jquery'</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="nf">wp_localize_script</span><span class="p">(</span> <span class="s1">'my-script-handle'</span><span class="p">,</span> <span class="s1">'bpRestApi'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">'nonce'</span> <span class="o">=&gt;</span> <span class="nf">wp_create_nonce</span><span class="p">(</span> <span class="s1">'wp_rest'</span> <span class="p">),</span>
+  <span class="p">)</span> <span class="p">);</span>
+<span class="p">}</span>
+<span class="nf">add_action</span><span class="p">(</span> <span class="s1">'bp_enqueue_scripts'</span><span class="p">,</span> <span class="s1">'example_enqueue_script'</span> <span class="p">);</span>
+</code></pre></div><h3 id='sending-the-nonce'>Sending the nonce</h3>
+<p>For developers making their own Ajax requests, the nonce will need to be passed with each request. The recommended way to send the nonce value is in the request header. Below is an example using jQuery.</p>
+
+<aside class="notice">
+<strong>Note</strong>: The code example in the righthand column are in the <strong>Javascript</strong> language. 
+</aside>
+<div class="highlight"><pre class="highlight plaintext"><code>jQuery.ajax( {
+  url: '/wp-json/buddypress/v1/components',
+  beforeSend: function( xhr ) {
+    xhr.setRequestHeader( 'X-WP-Nonce', bpRestApi.nonce );
+  },
+  success: function( data ) {
+    console.log( data )
+  }
+} );
+</code></pre></div><h3 id='the-wp-api-request-script-as-a-dependency'>The WP API Request script as a dependency</h3>
+<p>We advise you to use the <code>wp-api-request</code> JavaScript we’ve built to make sure to be compatible with our WordPress minimum required version: <code>4.7.0</code>.</p>
+
+<p>That’s why, you’ll find into each endpoint of the <a href="#developer-endpoint-reference">Developer Endpoint Reference</a> examples of use relying on this dependency.</p>
+
+<aside class="notice">
+<strong>Note</strong>: The code examples in the righthand column are in the <strong>PHP</strong> and <strong>Javascript</strong> languages. 
+</aside>
+
+<blockquote>
+<p>To enjoy it, you simply need to include it as a dependency of your JavaScript when <a href="https://developer.wordpress.org/plugins/javascript/enqueuing/">registering/enqueueing</a> your script into WordPress. For example, our <code>example_enqueue_script()</code> function becomes:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight php"><code><span class="cp">&lt;?php</span>
+<span class="c1">// Using 'wp-api-request' as a dependency.</span>
+<span class="k">function</span> <span class="n">example_enqueue_script</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">wp_enqueue_script</span><span class="p">(</span> <span class="s1">'my-script-handle'</span><span class="p">,</span> <span class="s1">'url-to/my-script.js'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span> <span class="s1">'wp-api-request'</span> <span class="p">)</span> <span class="p">);</span>
+<span class="p">}</span>
+<span class="nf">add_action</span><span class="p">(</span> <span class="s1">'bp_enqueue_scripts'</span><span class="p">,</span> <span class="s1">'example_enqueue_script'</span> <span class="p">);</span>
+</code></pre></div>
+<blockquote>
+<p>Then into the <code>my-script.js</code> file we can directly use the <code>wp.apiRequest()</code> function:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>wp.apiRequest( {
+    path: 'buddypress/v1/components',
+    type: 'GET',
+} ).done( function( data ) {
+    console.log( data );
+} ).fail( function( error ) {
+    console.log( error );
+} );
+</code></pre></div>
