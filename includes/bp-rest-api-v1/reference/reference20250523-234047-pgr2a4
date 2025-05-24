@@ -1,0 +1,24 @@
+<h1 id='reference'>Reference</h1>
+<p>Just like the WordPress REST API, the BP REST API is organized around <a href="http://en.wikipedia.org/wiki/Representational_state_transfer">REST</a>, and is designed to have predictable, resource-oriented URLs and to use HTTP response codes to indicate API errors. The API uses built-in HTTP features, like HTTP authentication and HTTP verbs, which can be understood by off-the-shelf HTTP clients, and supports cross-origin resource sharing to allow you to interact securely with the API from a client-side web application.</p>
+
+<p>The BP REST API uses JSON exclusively as the request and response format, including error responses.</p>
+
+<p>The BP REST API provides public data accessible to any client anonymously, as well as private data only available after <a href="https://developer.buddypress.org/bp-rest-api/#about-authentification">authentication</a>. Once authenticated the BP REST API supports most BuddyPress community actions, allowing you to enhance your plugins with more responsive management tools, or build complex single-page applications.</p>
+
+<p>This API reference provides information on the specific endpoints available through the API, their parameters, and their response data format.</p>
+<h2 id='developer-endpoint-reference'>Developer Endpoint Reference</h2>
+<table><thead>
+<tr>
+<th>Resource</th>
+<th>Base Route</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="https://developer.buddypress.org/bp-rest-api/reference/components/">Components</a></td>
+<td><code>/buddypress/v1/components</code></td>
+</tr>
+<tr>
+<td><a href="https://developer.buddypress.org/bp-rest-api/reference/members/">Members</a></td>
+<td><code>/buddypress/v1/members</code></td>
+</tr>
+</tbody></table>

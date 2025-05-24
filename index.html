@@ -659,7 +659,7 @@ function example_update_rest_field_callback( $object, $value, $attribute ) {
 
 <p>The BP REST API uses JSON exclusively as the request and response format, including error responses.</p>
 
-<p>The BP REST API provides public data accessible to any client anonymously, as well as private data only available after <a href="#about-authentification">authentication</a>. Once authenticated the BP REST API supports most BuddyPress community actions, allowing you to enhance your plugins with more responsive management tools, or build complex single-page applications.</p>
+<p>The BP REST API provides public data accessible to any client anonymously, as well as private data only available after <a href="https://developer.buddypress.org/bp-rest-api/#about-authentification">authentication</a>. Once authenticated the BP REST API supports most BuddyPress community actions, allowing you to enhance your plugins with more responsive management tools, or build complex single-page applications.</p>
 
 <p>This API reference provides information on the specific endpoints available through the API, their parameters, and their response data format.</p>
 <h2 id='developer-endpoint-reference'>Developer Endpoint Reference</h2>
@@ -670,100 +670,12 @@ function example_update_rest_field_callback( $object, $value, $attribute ) {
 </tr>
 </thead><tbody>
 <tr>
-<td><a href="#components-endpoint">Components</a></td>
+<td><a href="https://developer.buddypress.org/bp-rest-api/reference/components/">Components</a></td>
 <td><code>/buddypress/v1/components</code></td>
 </tr>
 <tr>
-<td><a href="#members-endpoint">Members</a></td>
+<td><a href="https://developer.buddypress.org/bp-rest-api/reference/members/">Members</a></td>
 <td><code>/buddypress/v1/members</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/activity/">Activity</a></td>
-<td><code>/buddypress/v1/activity</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/extended-profiles/">Extended Profiles</a>:</td>
-<td></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/extended-profiles/profile-group/">Profile Group</a></td>
-<td><code>/buddypress/v1/xprofile/groups</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/extended-profiles/profile-field/">Profile Field</a></td>
-<td><code>/buddypress/v1/xprofile/fields</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/extended-profiles/profile-data/">Profile Data</a></td>
-<td><code>/buddypress/v1/xprofile/&lt;field_id&gt;/data/&lt;user_id&gt;</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/user-groups/">User Groups</a>:</td>
-<td></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/user-groups/groups/">Groups</a></td>
-<td><code>/buddypress/v1/groups</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/user-groups/group-membership/">Group Membership</a></td>
-<td><code>/buddypress/v1/groups/&lt;group_id&gt;/members</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/user-groups/group-membership-requests/">Group Membership Requests</a></td>
-<td><code>/buddypress/v1/groups/&lt;group_id&gt;/membership-request</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/user-groups/group-invites/">Group Invites</a></td>
-<td><code>/buddypress/v1/groups/&lt;group_id&gt;/invites</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/private-messaging/">Private Messaging</a></td>
-<td><code>/buddypress/v1/messages</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/private-messaging/sitewide-notices/">Sitewide Notices</a></td>
-<td><code>/buddypress/v1/sitewide-notices</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/screen-notifications/">Screen Notifications</a></td>
-<td><code>/buddypress/v1/notifications</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/attachments/">Attachments</a>:</td>
-<td></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/attachments/member-avatar/">Member Avatar</a></td>
-<td><code>/buddypress/v1/members/&lt;user_id&gt;/avatar</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/attachments/member-cover-image/">Member Cover Image</a></td>
-<td><code>/buddypress/v1/members/&lt;user_id&gt;/cover</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/attachments/group-avatar/">Group Avatar</a></td>
-<td><code>/buddypress/v1/groups/&lt;group_id&gt;/avatar</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/attachments/group-cover-image/">Group Cover Image</a></td>
-<td><code>/buddypress/v1/groups/&lt;group_id&gt;/cover</code></td>
-</tr>
-<tr>
-<td>– <a href="https://developer.buddypress.org/bp-rest-api/reference/attachments/blog-avatar/">Blog Avatar</a></td>
-<td><code>/buddypress/v1/blogs/&lt;id&gt;/avatar</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/blogs/">User Blogs</a></td>
-<td><code>/buddypress/v1/blogs</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/signup/">User Signups</a></td>
-<td><code>/buddypress/v1/signup</code></td>
-</tr>
-<tr>
-<td><a href="https://developer.buddypress.org/bp-rest-api/reference/friends/">Friend Connections</a></td>
-<td><code>/buddypress/v1/friends</code></td>
 </tr>
 </tbody></table>
 <h1 id='components-endpoint'>Components Endpoint</h1>
