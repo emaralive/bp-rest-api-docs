@@ -49,4 +49,4 @@ When you merge a PR to the **main** branch of this repository, a workflow runs t
 ```
 
 > [!NOTE]
-> NOTE: If using Docker, you will want to run ```./deploy.sh --push-only``` as the final step.
+> If using Docker, you will want to run ```./deploy.sh --push-only``` as the final step.
