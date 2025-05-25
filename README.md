@@ -42,8 +42,11 @@ After this command completes, the generated docs can be found in the `build` dir
 
 ### Deploying the docs
 
-When you merge a PR to the trunk branch of this repository, a workflow runs that will automatically deploy the generated docs to the `gh-pages` branch. However, you can also deploy manually with the following:
+When you merge a PR to the **main** branch of this repository, a workflow runs that will automatically deploy the generated docs to the `gh-pages` branch. However, you can also deploy manually with the following:
 
 ```bash
 ./deploy.sh
 ```
+
+> [!NOTE]
+> NOTE: If using Docker, you will want to run ```./deploy.sh --push-only``` as the final step.
